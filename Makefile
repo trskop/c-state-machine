@@ -1,3 +1,5 @@
+LOCAL_PWD := $(shell pwd)
+
 SRC_DIR ?= src
 SRC = $(SRC_DIR)/
 
@@ -93,7 +95,7 @@ $(EXAMPLE_EXECUTABLES): $(SO_TARGET)
 #$(EXAMPLE_EXECUTABLES): $(A_TARGET)
 
 include-path:
-	@echo $(addprefix $(PWD)/,$(INCLUDE_PATH))
+	@echo $(addprefix $(LOCAL_PWD)/,$(INCLUDE_PATH))
 .PHONY: include-path
 NO_DEPS_TARGETS += include-path
 
