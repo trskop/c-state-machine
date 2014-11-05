@@ -29,11 +29,13 @@ EXAMPLE_EXECUTABLES = $(subst $(EXAMPLE),$(EXE),$(EXAMPLE_SOURCES:.c=))
 
 # {{{ Command and building flags ##############################################
 
+INCLUDE_PATH = $(SRC_DIR)
+
 CC_OUTPUT_OPTION = -o $@
 CC ?= gcc
 CFLAGS += -Wall -std=c11
 CFLAGS += -g
-CPPFLAGS += -I$(SRC_DIR)
+CPPFLAGS += $(addprefix -I,$(INCLUDE_PATH))
 #LDFLAGS +=
 #TARGET_ARCH +=
 #LDLIBS +=
@@ -95,6 +97,11 @@ build-examples: $(EXAMPLE_EXECUTABLES)
 
 $(EXAMPLE_EXECUTABLES): $(SO_TARGET)
 #$(EXAMPLE_EXECUTABLES): $(A_TARGET)
+
+include-path: private INCLUDE_PATH_PREFIX := $(shell pwd)
+include-path:
+	@echo $(addprefix $(INCLUDE_PATH_PREFIX)/,$(INCLUDE_PATH))
+.PHONY: include-path
 
 clean: clean-objects clean-dependency-files
 .PHONY: clean
