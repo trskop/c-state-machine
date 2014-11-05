@@ -42,10 +42,10 @@ extern "C" {
 #endif
 
 typedef void (*On_state_enter)(uint32_t cause, uint32_t current_state,
-    uint32_t previous_state, void *data);
+    uint32_t previous_state, void *event_data, void *data);
 
 typedef void (*On_undefined_state_transition)(uint32_t cause,
-    uint32_t current_state, void *data);
+    uint32_t current_state, void *event_data, void *data);
 
 typedef struct State_machine_transition_s
 {
@@ -313,6 +313,10 @@ uint32_t state_machine_current_state(State_machine *const state_machine,
  *   Send this event to event_machine, try to perform state transition, and
  *   execute on-enter callback.
  *
+ * @param[in] event_data
+ *   Data associated with event are passed unchanged to on-enter or
+ *   on-undefined-transition callback.
+ *
  * @param[in] flags
  *   Bit field that additionaly parametrises how this function works. Currently
  *   only <tt>STATE_MACHINE_NONBLOCK</tt> is supported. When flag 
@@ -329,7 +333,7 @@ uint32_t state_machine_current_state(State_machine *const state_machine,
  *   function as well.
  */
 uint32_t state_machine_event(State_machine *const, const uint32_t event,
-    const uint32_t flags);
+    void *const event_data, const uint32_t flags);
 
 #define STATE_MACHINE_SUCCESS       0
 #define STATE_MACHINE_WOULD_BLOCK   1

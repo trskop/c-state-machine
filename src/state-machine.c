@@ -189,7 +189,7 @@ uint32_t state_machine_current_state(State_machine *const sm,
 }
 
 uint32_t state_machine_event(State_machine *const sm, const uint32_t event,
-    const uint32_t flags)
+    void *const event_data, const uint32_t flags)
 {
     State_machine_transition *transition;
 
@@ -315,7 +315,7 @@ uint32_t state_machine_event(State_machine *const sm, const uint32_t event,
 
         if (on_enter != NULL)
         {
-            on_enter(event, current_state, previous_state, data);
+            on_enter(event, current_state, previous_state, event_data, data);
         }
     }
     else
@@ -325,7 +325,7 @@ uint32_t state_machine_event(State_machine *const sm, const uint32_t event,
 
         if (on_undefined_transition != NULL)
         {
-            on_undefined_transition(event, current_state, data);
+            on_undefined_transition(event, current_state, event_data, data);
         }
     }
 
