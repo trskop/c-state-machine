@@ -53,19 +53,13 @@ $(DEPS)%.deps: $(SRC)%.c
 	@$(MK_OUT_DIRS)
 	$(CC) $(CPPFLAGS) -MM -MT '$(subst $(SRC),$(OUT),$(<:%.c=%.o))' $(CC_OUTPUT_OPTION) $<
 
-$(OUT)%.o: private CFLAGS += -fPIC
 $(OUT)%.o: $(SRC)%.c
 	@$(MK_OUT_DIRS)
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $(CC_OUTPUT_OPTION) $<
+	$(CC) $(CFLAGS) -fPIC $(CPPFLAGS) $(TARGET_ARCH) -c $(CC_OUTPUT_OPTION) $<
 
-$(LIB)%.so: private CFLAGS += -fPIC
-$(LIB)%.so: private LDFLAGS += -shared
-
-$(EXE)%: private CPPFLAGS += -L$(LIB)
-$(EXE)%: private LDLIBS += -l$(LIB_BASE_NAME)
 $(EXE)%: $(EXAMPLE)%.c
 	@$(MK_OUT_DIRS)
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $< $(LOADLIBES) $(LDLIBS) $(CC_OUTPUT_OPTION)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -L$(LIB) $(LDFLAGS) $(TARGET_ARCH) $< $(LOADLIBES) $(LDLIBS) -l$(LIB_BASE_NAME) $(CC_OUTPUT_OPTION)
 
 # }}} Generic building rules ##################################################
 
@@ -80,7 +74,7 @@ build-so: $(SO_TARGET)
 
 $(SO_TARGET): $(OBJECTS)
 	@$(MK_OUT_DIRS)
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LOADLIBES) $(LDLIBS) $(CC_OUTPUT_OPTION)
+	$(CC) $(CFLAGS) -fPIC $(CPPFLAGS) $(LDFLAGS) -shared $(TARGET_ARCH) $^ $(LOADLIBES) $(LDLIBS) $(CC_OUTPUT_OPTION)
 
 build-a: $(A_TARGET)
 .PHONY: build-a
@@ -98,9 +92,8 @@ build-examples: $(EXAMPLE_EXECUTABLES)
 $(EXAMPLE_EXECUTABLES): $(SO_TARGET)
 #$(EXAMPLE_EXECUTABLES): $(A_TARGET)
 
-include-path: private INCLUDE_PATH_PREFIX := $(shell pwd)
 include-path:
-	@echo $(addprefix $(INCLUDE_PATH_PREFIX)/,$(INCLUDE_PATH))
+	@echo $(addprefix $(PWD)/,$(INCLUDE_PATH))
 .PHONY: include-path
 NO_DEPS_TARGETS += include-path
 
