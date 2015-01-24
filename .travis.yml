@@ -6,7 +6,8 @@ os:
 
 compiler:
   - clang
-  - gcc
+# Travis uses, at the moment, GCC 4.6.3 and it does't support -std=c11
+#  - gcc
 
 script:
   - make
