@@ -1,5 +1,11 @@
+Simple State Machine in C
+=========================
+
+[![Build](https://travis-ci.org/trskop/c-state-machine.svg)](https://travis-ci.org/trskop/c-state-machine)
+
+
 Description
-===========
+-----------
 
 Simple low-level state machine in C.
 
