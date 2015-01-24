@@ -59,17 +59,19 @@ static const char *event_names[] = {"EVENT_INC", "EVENT_DEC", "unknown"};
 #define event_to_str(e)             x_to_str(event_names, MAX_EVENT, e)
 
 void on_enter(uint32_t cause, uint32_t current_state, uint32_t previous_state,
-    void *data)
+    void *event_data, void *data)
 {
-    printf("on_enter(cause=%s, current_state=%s, previous_state=%s, data=%p);"
-        "\n", event_to_str(cause), state_to_str(current_state),
-        state_to_str(previous_state), data);
+    printf("on_enter(cause=%s, current_state=%s, previous_state=%s,"
+        "event_data=%p, data=%p);\n", event_to_str(cause),
+        state_to_str(current_state), state_to_str(previous_state), event_data,
+	data);
 }
 
-void on_undefined(uint32_t cause, uint32_t current_state, void *data)
+void on_undefined(uint32_t cause, uint32_t current_state, void *event_data,
+    void *data)
 {
-    printf("on_enter(cause=%s, current_state=%s, data=%p);\n",
-        event_to_str(cause), state_to_str(current_state), data);
+    printf("on_enter(cause=%s, current_state=%s, event_data=%p, data=%p);\n",
+        event_to_str(cause), state_to_str(current_state), event_data, data);
 }
 
 static const State_machine_transition transition_table[MAX_STATE][MAX_EVENT] =
@@ -101,6 +103,7 @@ static const State_machine_transition transition_table[MAX_STATE][MAX_EVENT] =
         STATE_MACHINE_TRANSITION(STATE_2, EVENT_DEC, STATE_1, on_enter)
     }
 };
+
 int main()
 {
     State_machine sm;
@@ -124,7 +127,7 @@ int main()
             printf("State machine is in %s and we send it %s\n",
                 state_to_str(state), event_to_str(event));
 
-            if_sm_failure (state_machine_event(&sm, event, 0))
+            if_sm_failure (state_machine_event(&sm, event, NULL, 0))
             {
                 exit(EXIT_FAILURE);
             }
